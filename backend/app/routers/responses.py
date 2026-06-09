@@ -1,0 +1,70 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from typing import List
+
+from ..database import get_db
+from ..models import SurveyQuestion, SurveyResponse, SurveyAnswer
+from ..schemas import SurveyResponseCreate, SurveyResponseOut
+
+router = APIRouter(
+    prefix="/responses",
+    tags=["Responses"]
+)
+
+
+@router.post("/", response_model=SurveyResponseOut)
+def create_response(payload: SurveyResponseCreate, db: Session = Depends(get_db)):
+    if not payload.buy_ecommerce_6m:
+        raise HTTPException(
+            status_code=400,
+            detail="Nguoi tra loi chua tung mua hang tren san TMĐT trong 6 thang gan day."
+        )
+
+    response = SurveyResponse(
+        buy_ecommerce_6m=payload.buy_ecommerce_6m,
+        buy_green_product=payload.buy_green_product,
+        gender=payload.gender,
+        age_group=payload.age_group,
+        income_group=payload.income_group,
+        purchase_frequency=payload.purchase_frequency,
+        main_platform=payload.main_platform
+    )
+
+    db.add(response)
+    db.flush()
+
+    question_map = {
+        q.question_code: q
+        for q in db.query(SurveyQuestion).all()
+    }
+
+    for answer in payload.answers:
+        question = question_map.get(answer.question_code)
+
+        if question is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Khong tim thay cau hoi: {answer.question_code}"
+            )
+
+        db_answer = SurveyAnswer(
+            response_id=response.id,
+            question_id=question.id,
+            answer_value=answer.answer_value
+        )
+        db.add(db_answer)
+
+    db.commit()
+    db.refresh(response)
+
+    return response
+
+
+@router.get("/", response_model=List[SurveyResponseOut])
+def get_responses(db: Session = Depends(get_db)):
+    responses = (
+        db.query(SurveyResponse)
+        .order_by(SurveyResponse.submitted_at.desc())
+        .all()
+    )
+    return responses

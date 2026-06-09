@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+.env.*
+
+# Data files
+Data/
+*.xlsx
+*.xls
+*.csv
+
+# Reports and documents
+*.docx
+*.doc
+*.pdf
+*.pptx
+*.ppt
+*.wps
+
+# Images
+Hình ảnh Báo cáo/
+HinhAnh/
+screenshots/
+
+# Database backups
+*.backup
+*.dump
+*.bak
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
