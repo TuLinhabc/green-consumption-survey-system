@@ -11,13 +11,40 @@ router = APIRouter(
     tags=["Responses"]
 )
 
-
 @router.post("/", response_model=SurveyResponseOut)
 def create_response(payload: SurveyResponseCreate, db: Session = Depends(get_db)):
+
     if not payload.buy_ecommerce_6m:
         raise HTTPException(
             status_code=400,
-            detail="Nguoi tra loi chua tung mua hang tren san TMĐT trong 6 thang gan day."
+            detail="Nguoi tra loi chua tung mua hang TMĐT trong 6 thang gan day."
+        )
+
+    if len(payload.answers) != 28:
+        raise HTTPException(
+            status_code=400,
+            detail="Phai co dung 28 cau tra loi"
+        )
+
+    codes = [a.question_code for a in payload.answers]
+
+    if len(codes) != len(set(codes)):
+        raise HTTPException(
+            status_code=400,
+            detail="Bi trung ma cau hoi trong phieu tra loi"
+        )
+
+    question_map = {
+        q.question_code: q
+        for q in db.query(SurveyQuestion).all()
+    }
+
+    invalid = set(codes) - set(question_map.keys())
+
+    if invalid:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cau hoi khong ton tai: {list(invalid)}"
         )
 
     response = SurveyResponse(
@@ -31,21 +58,10 @@ def create_response(payload: SurveyResponseCreate, db: Session = Depends(get_db)
     )
 
     db.add(response)
-    db.flush()
-
-    question_map = {
-        q.question_code: q
-        for q in db.query(SurveyQuestion).all()
-    }
+    db.flush() # Tạo ID cho response để dùng cho các answer
 
     for answer in payload.answers:
-        question = question_map.get(answer.question_code)
-
-        if question is None:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Khong tim thay cau hoi: {answer.question_code}"
-            )
+        question = question_map[answer.question_code]
 
         db_answer = SurveyAnswer(
             response_id=response.id,

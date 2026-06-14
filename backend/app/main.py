@@ -1,5 +1,8 @@
 from fastapi import FastAPI
-from .routers import questions, responses
+from .routers import questions, responses, analysis
+from app.routers import analysis_cronbach
+from app.routers import analysis_efa
+from app.routers import analysis_regression
 
 app = FastAPI(
     title="Green Consumption Survey API",
@@ -9,7 +12,10 @@ app = FastAPI(
 
 app.include_router(questions.router)
 app.include_router(responses.router)
-
+app.include_router(analysis.router)
+app.include_router(analysis_cronbach.router)
+app.include_router(analysis_efa.router)
+app.include_router(analysis_regression.router)
 
 @app.get("/")
 def root():
