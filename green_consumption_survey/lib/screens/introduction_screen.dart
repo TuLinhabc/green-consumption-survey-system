@@ -8,30 +8,41 @@ class IntroductionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,   // Quan trọng: chiếm full width
-        height: double.infinity,  // Quan trọng: chiếm full height
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF2E7D32), Color(0xFF66BB6A)],
+            colors: [
+              Color(0xFF2E7D32),
+              Color(0xFF66BB6A),
+            ],
           ),
         ),
         child: SafeArea(
-          child: Center(   // Căn giữa toàn bộ nội dung
+          child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 40,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Icon
-                    const Icon(Icons.eco, size: 140, color: Colors.white),
+                    const Icon(
+                      Icons.eco,
+                      size: 140,
+                      color: Colors.white,
+                    ),
+
                     const SizedBox(height: 40),
 
                     // Tiêu đề
                     const Text(
-                      "Khảo sát Hành vi Tiêu dùng Xanh",
+                      "Khảo sát Hành vi Tiêu dùng Xanh trên Sàn Thương mại Điện tử",
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -39,6 +50,7 @@ class IntroductionScreen extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
+
                     const SizedBox(height: 20),
 
                     // Mô tả
@@ -51,11 +63,12 @@ class IntroductionScreen extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
+
                     const SizedBox(height: 60),
 
-                    // Nút bắt đầu
+                    // Nút bắt đầu khảo sát
                     SizedBox(
-                      width: 280,   // Giới hạn chiều rộng nút
+                      width: 280,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
@@ -80,6 +93,26 @@ class IntroductionScreen extends StatelessWidget {
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // Nút Admin
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/admin');
+                      },
+                      icon: const Icon(
+                        Icons.admin_panel_settings,
+                        color: Colors.white70,
+                      ),
+                      label: const Text(
+                        "Admin",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
                         ),
                       ),
                     ),
