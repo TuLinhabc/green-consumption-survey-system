@@ -10,10 +10,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# ================== CORS - RẤT QUAN TRỌNG CHO FLUTTER WEB ==================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],           # Cho phép tất cả (dev). Sau này thay bằng domain cụ thể
+    allow_origins=["*"],           
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
